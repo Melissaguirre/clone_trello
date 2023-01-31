@@ -1,17 +1,19 @@
 from pydantic import BaseModel 
+from typing import Optional
 
 class ListBase(BaseModel):
-    list_name : str 
-    order : int 
-    workspaceID : str 
+    listID : str 
+    list_name : Optional[str] 
+    order : Optional[int] 
+    workspaceID : Optional[str] 
 
 class ListCreate(ListBase):
-    listID : str
+    ...
 
 
 class ListUpdate(BaseModel):
-    list_name : str 
-    order : int
+    list_name : Optional[str] 
+    order : Optional[int]
 
 class ReadList(ListBase):
     listID : str 

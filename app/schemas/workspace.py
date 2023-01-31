@@ -1,20 +1,21 @@
 from pydantic import BaseModel 
+from typing import Optional
 
 class WorkspaceBase(BaseModel):
     workspaceID : str 
-    workspace_name : str 
-    background_imgURL : str 
-    starred : bool 
-    board_type : str 
+    workspace_name : Optional[str] 
+    background_imgURL : Optional[str] 
+    starred : Optional[bool] 
+    board_type : Optional[str] 
 
 class WorkspaceCreate(WorkspaceBase):
     ...
 
 class WorkspaceUpdate(BaseModel):
-    workspace_name : str 
-    background_imgURL : str 
-    starred : bool 
-    board_type : str 
+    workspace_name : Optional[str]
+    background_imgURL : Optional[str] 
+    starred : Optional[bool] 
+    board_type : Optional[str] 
 
 class ReadWorkspace(WorkspaceBase):
     ... 

@@ -1,32 +1,38 @@
-from pydantic import BaseModel 
+from pydantic import BaseModel
+from typing import Optional
 
 class BaseUser(BaseModel):
     userID : str
-    first_name : str 
-    last_name : str 
-    address : str 
-    city  : str 
-    state  : str 
-    Zip : int 
-    phone  : str 
-    email : str 
-    avatar_imgURL : str 
+    first_name : Optional[str]
+    last_name : Optional[str] 
+    address : Optional[str]
+    city : Optional[str] 
+    state : Optional[str]
+    Zip : Optional[int]
+    phone  : Optional[str] 
+    email : Optional[str] 
+    avatar_imgURL : Optional[str] 
+
+    class Config:
+        orm_mode = True
 
 class UserCreate(BaseUser):
+    userID : str
     password : str 
 
 
 class UserUpdate(BaseModel):
-    address : str 
-    city  : str 
-    state  : str 
-    Zip : int 
-    phone  : str 
-    email : str 
-    avatar_imgURL : str 
+    userID : str
+    address : Optional[str] 
+    city  : Optional[str]
+    state  : Optional[str] 
+    Zip : Optional[int] 
+    phone  : Optional[str] 
+    email : Optional[str]
+    avatar_imgURL : Optional[str]
 
 class ReadUser(BaseUser):
-    userID : str
+    ...
 
 class UserInDBBase(BaseUser):
     userID : str
@@ -36,3 +42,16 @@ class UserInDBBase(BaseUser):
 
 class User(UserInDBBase):
     ...
+
+class UserOut(BaseModel):
+    userID : str 
+    address : Optional[str] 
+    city  : Optional[str] 
+    state  : Optional[str]
+    Zip : Optional[int]
+    phone  : Optional[str] 
+    email : Optional[str] 
+    avatar_imgURL : Optional[str]
+
+    class Config:
+        orm_mode = True

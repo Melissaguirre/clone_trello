@@ -3,7 +3,7 @@ version: '3.8'
 services:
   mysql:
     image: mysql:8.0 
-    container_name: proy_mysql
+    container_name: mysql_proy
     restart: always 
     environment: 
       MYSQL_USER : usermysql
@@ -11,7 +11,7 @@ services:
       MYSQL_PASSWORD: password
       MYSQL_DATABASE: proyecto
     ports:
-      - '33006:3306'
+      - '33066:3306'
     volumes: 
       - mysql_vol:/var/lib/mysql
 

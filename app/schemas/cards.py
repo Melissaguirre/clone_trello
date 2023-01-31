@@ -1,16 +1,18 @@
 from pydantic import BaseModel 
+from typing import Optional
 
 class CardBase(BaseModel):
-    card_description : str 
-    due_date : int 
+    cardID : str 
+    card_description : Optional[str] 
+    due_date : Optional[int] 
     listID : str 
 
 class CardCreate(CardBase):
-    cardID : str 
+    ...
 
 class CardUpdate(BaseModel):
-    card_description : str 
-    due_date : int 
+    card_description : Optional[str] 
+    due_date : Optional[int] 
 
 
 class ReadCards(CardBase):
