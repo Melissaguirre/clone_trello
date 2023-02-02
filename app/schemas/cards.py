@@ -2,24 +2,24 @@ from pydantic import BaseModel
 from typing import Optional
 
 class CardBase(BaseModel):
-    cardID : str 
+    id : str 
     card_description : Optional[str] 
     due_date : Optional[int] 
-    listID : str 
+    list_id : Optional[str]
 
 class CardCreate(CardBase):
     ...
 
 class CardUpdate(BaseModel):
     card_description : Optional[str] 
-    due_date : Optional[int] 
+    due_date : int
 
 
 class ReadCards(CardBase):
-   cardID : str
+    ...
 
 class CardInDBBase(CardBase):
-    cardID : str 
+    id : str 
 
     class Config:
         orm_mode = True

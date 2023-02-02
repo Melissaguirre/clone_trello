@@ -11,9 +11,9 @@ async def get_workspaces(skip: int = 0, limit: int = 100) -> Any:
     return await crud.workpaces.get_all(skip=skip, limit=limit)
 
 #read workspaces by workspaceID
-@workspace.get("/workspace/{workspaceID}", response_model=schemas.Workspace, tags=["Workspace"])
-async def get_workspaces(workspaceID: str)-> Any:
-    workspace = await crud.workpaces.get(workspaceID=workspaceID)
+@workspace.get("/workspace/{id}", response_model=schemas.Workspace, tags=["Workspace"])
+async def get_workspaces(id: str)-> Any:
+    workspace = await crud.workpaces.get(id=id)
     if not workspace:
         raise HTTPException(status_code=404, detail="Workspace is not found")
     return workspace 
@@ -25,9 +25,9 @@ async def create_workspace(workspace_in: schemas.WorkspaceCreate) -> Any:
     return workspace
 
 #update workspace
-@workspace.put("/workspace/{workspaceID}",response_model=schemas.Workspace, tags=["Workspace"])
-async def update_workspace(workspace_in: schemas.WorkspaceUpdate, workspaceID: str)-> Any:
-    workspace = await crud.workpaces.update(workspaceID=workspaceID, obj_in=workspace_in)
+@workspace.put("/workspace/{id}",response_model=schemas.Workspace, tags=["Workspace"])
+async def update_workspace(workspace_in: schemas.WorkspaceUpdate, id: str)-> Any:
+    workspace = await crud.workpaces.update(id=id, obj_in=workspace_in)
     if not workspace:
         raise HTTPException(
             status_code=404, 
@@ -35,9 +35,9 @@ async def update_workspace(workspace_in: schemas.WorkspaceUpdate, workspaceID: s
     return workspace 
 
 #delete workspace
-@workspace.delete("/workspace/{workspaceID}", tags=["Workspace"])
-async def delete_workspace(workspaceID: str) -> Any:
-    workspace = await crud.workpaces.remove(workspaceID=workspaceID)
+@workspace.delete("/workspace/{id}", tags=["Workspace"])
+async def delete_workspace(id: str) -> Any:
+    workspace = await crud.workpaces.remove(id=id)
     if not workspace:
         raise HTTPException(
             status_code = 404, 

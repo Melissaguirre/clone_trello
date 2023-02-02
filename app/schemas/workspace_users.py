@@ -1,9 +1,11 @@
 from pydantic import BaseModel 
+from typing import Optional
 from datetime import datetime
 
 class WorkspaceUserBase(BaseModel):
-    workspaceID : str
-    userID : str
+    id : str 
+    workspace_id: Optional[str]
+    user_id : Optional[str]
     date : datetime
 
 class WorkspaceUserCreate(WorkspaceUserBase):
@@ -16,7 +18,7 @@ class WorkspaceUserRead(WorkspaceUserBase):
     ...
 
 class WorkspaceUserInDBBase(WorkspaceUserBase):
-    workspaceID : str 
+    id : str 
 
     class Config:
         orm_mode = True

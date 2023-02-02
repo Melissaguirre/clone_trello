@@ -11,9 +11,9 @@ async def get_lists(skip: int = 0, limit: int = 100) -> Any:
     return await crud.lists.get_all(skip=skip, limit=limit)
 
 #read list by listID
-@lists.get("/list/{listID}", response_model=schemas.Lists, tags=["List"])
-async def get_list(listID: str) -> Any:
-    lists = await crud.lists.get(listID=listID)
+@lists.get("/list/{list_id}", response_model=schemas.Lists, tags=["List"])
+async def get_list(*, list_id: str) -> Any:
+    lists = await crud.lists.get(list_id=list_id)
     if not lists:
         raise HTTPException(
             status_code=404, 
@@ -27,9 +27,9 @@ async def create_list(list_in: schemas.ListCreate) -> Any:
     return lists 
 
 #update list
-@lists.put("/list/{listID}", response_model=schemas.Lists, tags=["List"])
-async def update_list(*, listID: str, list_in: schemas.ListUpdate) -> Any:
-    lists = await crud.lists.update( listID=listID, obj_in=list_in)
+@lists.put("/list/{list_id}", response_model=schemas.Lists, tags=["List"])
+async def update_list(*, list_id: str, list_in: schemas.ListUpdate) -> Any:
+    lists = await crud.lists.update(list_id=list_id, obj_in=list_in)
     if not lists:
         raise HTTPException(
             status_code=404, 
@@ -37,9 +37,9 @@ async def update_list(*, listID: str, list_in: schemas.ListUpdate) -> Any:
     return lists
 
 #delete list 
-@lists.delete("/list/{listID}", tags=["List"])
-async def delete_list(listID: str) -> Any:
-    lists = await crud.lists.remove(listID=listID)
+@lists.delete("/list/{id_list}", tags=["List"])
+async def delete_list(*, id_list: str) -> Any:
+    lists = await crud.lists.remove(id_list=id_list)
     if not lists:
         raise HTTPException(
             status_code=404, 

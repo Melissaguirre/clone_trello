@@ -6,5 +6,5 @@ from app.crud.base import CRUDBase
 
 class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
     ...
-
+   
 users = CRUDUser(Users)

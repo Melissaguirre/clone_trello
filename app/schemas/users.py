@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 class BaseUser(BaseModel):
-    userID : str
+    id : str
     first_name : Optional[str]
     last_name : Optional[str] 
     address : Optional[str]
@@ -17,12 +17,11 @@ class BaseUser(BaseModel):
         orm_mode = True
 
 class UserCreate(BaseUser):
-    userID : str
+    id : str
     password : str 
 
 
 class UserUpdate(BaseModel):
-    userID : str
     address : Optional[str] 
     city  : Optional[str]
     state  : Optional[str] 
@@ -35,23 +34,10 @@ class ReadUser(BaseUser):
     ...
 
 class UserInDBBase(BaseUser):
-    userID : str
+    id : str
 
     class Config:
         orm_mode = True
 
 class User(UserInDBBase):
     ...
-
-class UserOut(BaseModel):
-    userID : str 
-    address : Optional[str] 
-    city  : Optional[str] 
-    state  : Optional[str]
-    Zip : Optional[int]
-    phone  : Optional[str] 
-    email : Optional[str] 
-    avatar_imgURL : Optional[str]
-
-    class Config:
-        orm_mode = True

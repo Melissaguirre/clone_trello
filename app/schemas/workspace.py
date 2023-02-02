@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 class WorkspaceBase(BaseModel):
-    workspaceID : str 
+    id : str 
     workspace_name : Optional[str] 
     background_imgURL : Optional[str] 
     starred : Optional[bool] 
@@ -21,7 +21,7 @@ class ReadWorkspace(WorkspaceBase):
     ... 
 
 class WorkspaceInDBBase(WorkspaceBase):
-    workspaceID : str 
+    id : str 
 
     class Config:
         orm_mode = True
