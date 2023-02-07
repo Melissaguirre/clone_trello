@@ -7,7 +7,7 @@ from app.api.v1.endpoints.workspace import workspace
 from app.api.v1.endpoints.comment import comment
 from app.api.v1.endpoints.card_user import card_user
 from app.api.v1.endpoints.workspace_user import workspace_user
-from app.api.v1.endpoints.login import login
+from app.api.v1.endpoints.login import route
 from tortoise.contrib.fastapi import register_tortoise 
 import uvicorn
 
@@ -29,5 +29,5 @@ app.include_router(lists)
 app.include_router(comment)
 app.include_router(workspace_user)
 app.include_router(card_user)
-app.include_router(login)
+app.include_router(route)
 
