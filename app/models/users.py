@@ -13,4 +13,5 @@ class Users(Model):
     phone = fields.CharField(max_length=50)
     email = fields.CharField(max_length=100)
     avatar_imgURL = fields.CharField(max_length=225)
-    password: fields.CharField(max_length=100)
+    hashed_password = fields.CharField(max_length=100)
+    

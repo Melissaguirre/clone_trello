@@ -6,7 +6,7 @@ from app.crud.base import CRUDBase
 
 class CRUDList(CRUDBase[Lists, ListCreate, ListUpdate]):
 
-    async def get(self, *, list_id: str) -> Optional[Lists]:
+    async def get_by_id(self, *, list_id: str) -> Optional[Lists]:
         return await Lists.get(list_id=list_id)
 
     async def create(self, *, obj_in: ListCreate) -> Lists:

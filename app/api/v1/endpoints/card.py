@@ -2,6 +2,8 @@ from fastapi import APIRouter, HTTPException
 from fastapi.encoders import jsonable_encoder
 from typing import List, Any, Optional
 from app import models, schemas, crud
+import tortoise
+
 
 card = APIRouter()
 
@@ -15,23 +17,25 @@ async def get_cards(skip: int = 0, limit: int = 100) -> Any:
 # read card by cardID
 @card.get("/card/{id}", response_model=schemas.Card, tags=["Card"])
 async def get_card(*, id: str) -> Any:
-    card = await crud.cards.get(id=id)
-    if not card:
+    try: 
+        return await crud.cards.get_by_id(id=id)
+    except tortoise.exceptions.DoesNotExist:
         raise HTTPException(
             status_code=404,
             detail="Card is not found")
-    return card
+
 
 
 # create card
 @card.post("/card", response_model=schemas.Card, tags=["Card"])
 async def create_card(*, card_in: schemas.CardCreate) -> Any:
-    card = await crud.cards.create(obj_in=card_in)
-    if not card:
+    try:
+        return await crud.cards.create(obj_in=card_in)
+    except tortoise.exceptions.IntegrityError:
         raise HTTPException(
             status_code=400,
             detail="The card already exists in the system.")
-    return card
+
 
 
 # update card

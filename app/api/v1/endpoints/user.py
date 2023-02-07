@@ -1,10 +1,12 @@
-from fastapi import APIRouter, HTTPException, Response, status, Request
+from fastapi import APIRouter, FastAPI, HTTPException, Response, status, Request
 from fastapi.responses import JSONResponse
 from typing import List, Any, Union
 from app import schemas, crud, models
 from app.models.users import Users
+import tortoise 
 
 user = APIRouter()
+
 
 # read all user
 @user.get("/user", response_model=List[schemas.ReadUser], tags=["User"])
@@ -15,23 +17,23 @@ async def read_users(skip: int = 0, limit: int = 100) -> Any:
 # read by userID
 @user.get("/user/{id}", response_model=schemas.User, tags=["User"])
 async def get_user(*, id: str) -> Any:
-    user = await crud.users.get(id=id)
-    if not user:
+    try:
+        return await crud.users.get_by_id(id=id)
+    except tortoise.exceptions.DoesNotExist:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="User is not found")
-    return user
 
 
 # create user
-@user.post("/user", response_model=schemas.User, tags=["User"])
+@user.post("/user", response_model=schemas.BaseUser, tags=["User"])
 async def create_user(*, user_in: schemas.UserCreate) -> Any:
-    user = await crud.users.create(obj_in=user_in)
-    if not user:
-        return JSONResponse(
-            status_code=status.HTTP_403_FORBIDDEN,
-            content={"detail":"the user with this id already exists"})
-    return user
+    try:
+        return await crud.users.create(obj_in=user_in)  
+    except tortoise.exceptions.IntegrityError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail="The user with this id already exists.")  
 
 
 # update user

@@ -35,9 +35,13 @@ class ReadUser(BaseUser):
 
 class UserInDBBase(BaseUser):
     id : str
+    
 
     class Config:
         orm_mode = True
 
 class User(UserInDBBase):
     ...
+
+class UserInDB(UserInDBBase):
+    hashed_password: str

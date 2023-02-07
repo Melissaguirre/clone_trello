@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from typing import List, Any 
 from app import schemas, models, crud
+import tortoise
 
 lists = APIRouter()
 
@@ -13,18 +14,24 @@ async def get_lists(skip: int = 0, limit: int = 100) -> Any:
 #read list by listID
 @lists.get("/list/{list_id}", response_model=schemas.Lists, tags=["List"])
 async def get_list(*, list_id: str) -> Any:
-    lists = await crud.lists.get(list_id=list_id)
-    if not lists:
+    try:
+        return await crud.lists.get_by_id(list_id=list_id)
+    except tortoise.exceptions.DoesNotExist:
         raise HTTPException(
-            status_code=404, 
+            status_code=status.HTTP_404_NOT_FOUND, 
             detail="List is not found")
-    return lists
+
 
 #create list
 @lists.post("/list", response_model=schemas.Lists, tags=["List"]) 
 async def create_list(list_in: schemas.ListCreate) -> Any:
-    lists = await crud.lists.create(obj_in=list_in)
-    return lists 
+    try:
+        return await crud.lists.create(obj_in=list_in)
+    except tortoise.exceptions.IntegrityError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="The list with this list_id already exists.")
+ 
 
 #update list
 @lists.put("/list/{list_id}", response_model=schemas.Lists, tags=["List"])

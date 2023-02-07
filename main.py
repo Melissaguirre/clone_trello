@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
+from fastapi.responses import JSONResponse
 from app.api.v1.endpoints.user import user
 from app.api.v1.endpoints.card import card
 from app.api.v1.endpoints.list import lists
@@ -6,10 +7,13 @@ from app.api.v1.endpoints.workspace import workspace
 from app.api.v1.endpoints.comment import comment
 from app.api.v1.endpoints.card_user import card_user
 from app.api.v1.endpoints.workspace_user import workspace_user
+from app.api.v1.endpoints.login import login
 from tortoise.contrib.fastapi import register_tortoise 
 import uvicorn
 
 app = FastAPI()
+
+
 
 register_tortoise(
     app,
@@ -25,4 +29,5 @@ app.include_router(lists)
 app.include_router(comment)
 app.include_router(workspace_user)
 app.include_router(card_user)
+app.include_router(login)
 
