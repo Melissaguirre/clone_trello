@@ -3,6 +3,7 @@ from fastapi.encoders import jsonable_encoder
 from typing import List, Any
 from app.models.card_user import CardUsers
 from app import models, schemas, crud
+from app.helpers.guid_generator import generate_id
 import tortoise
 
 card_user = APIRouter()
@@ -24,9 +25,10 @@ async def get_card_user(id: str) -> Any:
 
 #create card_user
 @card_user.post("/card_user", response_model=schemas.CardUser, tags=["Card-User"])
-async def create_card_user(*, card_user_in: schemas.CardUserCreate) -> Any:
+async def create_card_user(*, card_user_in: schemas.CardUserBase) -> Any:
     try:
-        return await crud.card_users.create(obj_in=card_user_in)
+        obj_in = CardCreate(id=generate_id(), **card_user_in.dict())
+        return await crud.card_users.create(obj_in=obj_in)
     except tortoise.exceptions.Integrity.Error:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
