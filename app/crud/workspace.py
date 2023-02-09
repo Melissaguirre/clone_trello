@@ -7,4 +7,5 @@ from app.crud.base import CRUDBase
 class CRUDWorkspace(CRUDBase[Workspaces, WorkspaceCreate, WorkspaceUpdate]):
     ...
 
+
 workpaces = CRUDWorkspace(Workspaces)

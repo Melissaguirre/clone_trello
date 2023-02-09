@@ -5,17 +5,17 @@ from app import models, schemas, crud
 import tortoise
 
 
-card = APIRouter()
+router = APIRouter()
 
 
 # read all cards
-@card.get("/card", response_model=List[schemas.ReadCards], tags=["Card"])
+@router.get("", response_model=List[schemas.ReadCards])
 async def get_cards(skip: int = 0, limit: int = 100) -> Any:
     return await crud.cards.get_all(skip=skip, limit=limit)
 
 
 # read card by cardID
-@card.get("/card/{id}", response_model=schemas.Card, tags=["Card"])
+@router.get("/{id}", response_model=schemas.Card)
 async def get_card(*, id: str) -> Any:
     try: 
         return await crud.cards.get_by_id(id=id)
@@ -27,7 +27,7 @@ async def get_card(*, id: str) -> Any:
 
 
 # create card
-@card.post("/card", response_model=schemas.Card, tags=["Card"])
+@router.post("", response_model=schemas.Card)
 async def create_card(*, card_in: schemas.CardCreate) -> Any:
     try:
         return await crud.cards.create(obj_in=card_in)
@@ -39,7 +39,7 @@ async def create_card(*, card_in: schemas.CardCreate) -> Any:
 
 
 # update card
-@card.put("/card/{id}", tags=["Card"])
+@router.put("/{id}")
 async def update_card(*, id: str, card_in: schemas.CardUpdate, ) -> Any:
     card = await crud.cards.update(id=id, obj_in=card_in)
     if not card:
@@ -51,7 +51,7 @@ async def update_card(*, id: str, card_in: schemas.CardUpdate, ) -> Any:
 # delete card
 
 
-@card.delete("/card/{id}", tags=["Card"])
+@router.delete("/{id}")
 async def delete_card(id: str) -> Any:
     card = await crud.cards.remove(id=id)
     if not card:

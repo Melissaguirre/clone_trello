@@ -4,15 +4,15 @@ from typing import List, Any
 from app import models, schemas, crud
 import tortoise 
 
-workspace_user = APIRouter()
+router = APIRouter()
 
 #read all workspace_user 
-@workspace_user.get("/workspace_user", response_model=List[schemas.WorkspaceUserRead], tags=["Workspace-User"])
+@router.get("", response_model=List[schemas.WorkspaceUserRead])
 async def read_workspace_users(skip: int = 0, limit: int =  100) -> Any:
     return await crud.workspace_user.get_all(skip=skip, limit=limit)
 
 #get workspace user 
-@workspace_user.get("/workspace_user/{id}", response_model=schemas.WorkspaceUser, tags=["Workspace-User"])
+@router.get("/{id}", response_model=schemas.WorkspaceUser)
 async def get_workspace_user(id : str) -> Any:
     try:
         return await crud.workspace_user.get_by_id(id=id)
@@ -22,7 +22,7 @@ async def get_workspace_user(id : str) -> Any:
             detail="Workspace user is not found.")
 
 #create workspace user
-@workspace_user.post("/workspace_user", response_model=schemas.WorkspaceUser, tags=["Workspace-User"])
+@router.post("", response_model=schemas.WorkspaceUser)
 async def create_workspace_user(workspace_user_in: schemas.WorkspaceUserCreate) -> Any:
     try:
         return await crud.workspace_user.create(obj_in=workspace_user_in)
@@ -32,7 +32,7 @@ async def create_workspace_user(workspace_user_in: schemas.WorkspaceUserCreate) 
             detail="The workspace user with id already exists.")
 
 #update workspace user
-@workspace_user.put("/workspace_user/{id}", response_model=schemas.WorkspaceUser, tags=["Workspace-User"])
+@router.put("/{id}", response_model=schemas.WorkspaceUser, )
 async def update_workspace_user(*, id: str, workspace_user_in: schemas.WorkspaceUserUpdate) -> Any:
     workspace_user = await crud.workspace_user.update(id=id, obj_in=workspace_user_in)
     if not workspace_user:
@@ -42,7 +42,7 @@ async def update_workspace_user(*, id: str, workspace_user_in: schemas.Workspace
     return workspace_user
 
 #delete workspace user
-@workspace_user.delete("/workspace_user/{id}}", tags=["Workspace-User"])
+@router.delete("/{id}")
 async def delete_workspace_user(id: str) -> Any:
     workspace_user = await crud.workspace_user.remove(id=id)
     if not workspace_user:

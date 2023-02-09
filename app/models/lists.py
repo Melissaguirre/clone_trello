@@ -1,6 +1,5 @@
 from tortoise.models import Model 
 from tortoise import fields 
-from app.models.workspaces import Workspaces
 
 class Lists(Model):
     list_id = fields.CharField(pk=True,index=True, max_length=225)

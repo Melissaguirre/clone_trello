@@ -8,12 +8,12 @@ from app.core.config import settings
 from app.api import deps
 
 
-login = APIRouter()
+router = APIRouter()
 
 
-@login.post("/login/access-token", response_model=schemas.Token) 
+@router.post("/access-token", response_model=schemas.Token) 
 async def login_access_token(form_data: OAuth2PasswordRequestForm = Depends()) -> Any:
-    user = await crud.users.authenticate(id=form_data.username, password=form_data.password)
+    user = await crud.users.authenticate(email=form_data.username, password=form_data.password)
     if not user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect id or password")
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -22,6 +22,6 @@ async def login_access_token(form_data: OAuth2PasswordRequestForm = Depends()) -
         "token_type": "bearer",
     }
 
-@login.post("/login/test-token", response_model=schemas.User)
+@router.post("/test-token", response_model=schemas.User)
 async def token_current_user(current_user: models.Users = Depends(deps.get_current_user)) -> Any:
     return current_user

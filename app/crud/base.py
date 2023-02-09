@@ -1,5 +1,7 @@
-from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union 
+from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
+ 
 from fastapi.encoders import jsonable_encoder
+
 from pydantic import BaseModel
 
 ModelType = TypeVar("ModelType", bound=Any)
@@ -17,6 +19,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     async def get_by_id(self, id: str) -> Optional[ModelType]:
         return await self.model.get(id=id) 
+    
+    async def filter_name_user(self, *, first_name: str) -> Optional[ModelType]:
+        return await self.model.filter(first_name=first_name)
     
     async def create(self, *, obj_in=CreateSchemaType) -> ModelType:
         obj_in_data =(obj_in.dict(exclude_unset=True))

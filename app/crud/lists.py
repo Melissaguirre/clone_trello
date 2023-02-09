@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Union
+from typing import Optional
 from app.models.lists import Lists
 from app.schemas.lists import ListCreate, ListUpdate
 from app.crud.base import CRUDBase

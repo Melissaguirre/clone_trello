@@ -1,7 +1,6 @@
 from tortoise.models import Model 
 from tortoise import fields
-from app.models.cards import Cards
-from app.models.users import Users
+
 
 class CardUsers(Model):
     id : fields.CharField(pk=True, index=True, max_length=50)

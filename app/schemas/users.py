@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 
+
 class BaseUser(BaseModel):
     id : str
     first_name : Optional[str]
@@ -16,6 +17,7 @@ class BaseUser(BaseModel):
     class Config:
         orm_mode = True
 
+
 class UserCreate(BaseUser):
     id : str
     password : str 
@@ -30,18 +32,20 @@ class UserUpdate(BaseModel):
     email : Optional[str]
     avatar_imgURL : Optional[str]
 
+
 class ReadUser(BaseUser):
     ...
+
 
 class UserInDBBase(BaseUser):
     id : str
     
-
     class Config:
         orm_mode = True
 
 class User(UserInDBBase):
     ...
+
 
 class UserInDB(UserInDBBase):
     hashed_password: str

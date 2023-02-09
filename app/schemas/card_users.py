@@ -1,5 +1,6 @@
 from pydantic import BaseModel 
 
+
 class CardUserBase(BaseModel):
     id : str 
     card_id : str
@@ -8,12 +9,15 @@ class CardUserBase(BaseModel):
 
 class CardUserCreate(CardUserBase):
     order : int 
+    
 
 class CardUserUpdate(BaseModel):
     order : int
 
+
 class ReadCardUser(CardUserBase):
     order : int 
+
 
 class CardUserInDBBase(CardUserBase):
     id : str 
@@ -21,6 +25,7 @@ class CardUserInDBBase(CardUserBase):
 
     class Config:
         orm_mode = True
+
 
 class CardUser(CardUserInDBBase):
     ...

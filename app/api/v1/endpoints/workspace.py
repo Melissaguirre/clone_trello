@@ -5,15 +5,14 @@ from app import crud, models, schemas
 import tortoise
 
 
-workspace = APIRouter()
-
+router = APIRouter()
 #read all workspeaces
-@workspace.get("/workspace", response_model=List[schemas.ReadWorkspace], tags=["Workspace"])
+@router.get("", response_model=List[schemas.ReadWorkspace])
 async def get_workspaces(skip: int = 0, limit: int = 100) -> Any:
     return await crud.workpaces.get_all(skip=skip, limit=limit)
 
 #read workspaces by workspaceID
-@workspace.get("/workspace/{id}", response_model=schemas.Workspace, tags=["Workspace"])
+@router.get("/{id}", response_model=schemas.Workspace)
 async def get_workspaces(id: str)-> Any:
     try: 
         return await crud.workpaces.get_by_id(id=id)
@@ -24,7 +23,7 @@ async def get_workspaces(id: str)-> Any:
 
 
 #create workspace
-@workspace.post("/workspace",response_model=schemas.Workspace, tags=["Workspace"])
+@router.post("",response_model=schemas.Workspace)
 async def create_workspace(workspace_in: schemas.WorkspaceCreate) -> Any:
     try:
         return await crud.workpaces.create(obj_in=workspace_in)
@@ -34,7 +33,7 @@ async def create_workspace(workspace_in: schemas.WorkspaceCreate) -> Any:
             detail="The workspace with this id already exists")
 
 #update workspace
-@workspace.put("/workspace/{id}",response_model=schemas.Workspace, tags=["Workspace"])
+@router.put("/{id}",response_model=schemas.Workspace)
 async def update_workspace(workspace_in: schemas.WorkspaceUpdate, id: str)-> Any:
     workspace = await crud.workpaces.update(id=id, obj_in=workspace_in)
     if not workspace:
@@ -44,7 +43,7 @@ async def update_workspace(workspace_in: schemas.WorkspaceUpdate, id: str)-> Any
     return workspace 
 
 #delete workspace
-@workspace.delete("/workspace/{id}", tags=["Workspace"])
+@router.delete("/{id}")
 async def delete_workspace(id: str) -> Any:
     workspace = await crud.workpaces.remove(id=id)
     if not workspace:

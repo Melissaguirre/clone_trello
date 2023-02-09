@@ -1,6 +1,7 @@
 from pydantic import BaseModel 
 from typing import Optional
 
+
 class WorkspaceBase(BaseModel):
     id : str 
     workspace_name : Optional[str] 
@@ -8,8 +9,10 @@ class WorkspaceBase(BaseModel):
     starred : Optional[bool] 
     board_type : Optional[str] 
 
+
 class WorkspaceCreate(WorkspaceBase):
     ...
+
 
 class WorkspaceUpdate(BaseModel):
     workspace_name : Optional[str]
@@ -17,14 +20,17 @@ class WorkspaceUpdate(BaseModel):
     starred : Optional[bool] 
     board_type : Optional[str] 
 
+
 class ReadWorkspace(WorkspaceBase):
     ... 
+
 
 class WorkspaceInDBBase(WorkspaceBase):
     id : str 
 
     class Config:
         orm_mode = True
+
 
 class Workspace(WorkspaceInDBBase):
     ...

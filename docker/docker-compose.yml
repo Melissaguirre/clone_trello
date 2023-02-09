@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0 
+    container_name: mysql_proy
+    restart: always 
+    environment: 
+      MYSQL_USER : usermysql
+      MYSQL_ROOT_PASSWORD : password
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: proyecto
+    ports:
+      - '33066:3306'
+    volumes: 
+      - mysql_vol:/var/lib/mysql
+    networks:
+      - clone_trello
+
+  app:
+    container_name: application
+    build: 
+      dockerfile: Dockerfile
+      context: . 
+    command: uvicorn app.main:app --reload --port 8011
+    ports:
+      - 8010:8011
+
+    environment:
+      DB_URL: mysql://usermysql:password@localhost:33066/proyecto
+    volumes:
+      - .:/usr/src/app
+    networks:
+      - clone_trello
+
+
+volumes:
+  mysql_vol:
+
+networks:
+  clone_trello:
+    external: true

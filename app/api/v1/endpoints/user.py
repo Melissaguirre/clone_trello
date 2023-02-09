@@ -5,17 +5,22 @@ from app import schemas, crud, models
 from app.models.users import Users
 import tortoise 
 
-user = APIRouter()
+router = APIRouter()
 
 
 # read all user
-@user.get("/user", response_model=List[schemas.ReadUser], tags=["User"])
+@router.get("", response_model=List[schemas.ReadUser])
 async def read_users(skip: int = 0, limit: int = 100) -> Any:
     return await crud.users.get_all(skip=skip, limit=limit)
 
 
+#filter by name
+@router.get("/{name}", response_model=schemas.BaseUser)
+async def get_user_by_name(first_name : str):
+    return await crud.users.filter_name_user(first_name=first_name)
+
 # read by userID
-@user.get("/user/{id}", response_model=schemas.User, tags=["User"])
+@router.get("/{id}", response_model=schemas.User)
 async def get_user(*, id: str) -> Any:
     try:
         return await crud.users.get_by_id(id=id)
@@ -26,7 +31,7 @@ async def get_user(*, id: str) -> Any:
 
 
 # create user
-@user.post("/user", response_model=schemas.BaseUser, tags=["User"])
+@router.post("", response_model=schemas.BaseUser)
 async def create_user(*, user_in: schemas.UserCreate) -> Any:
     try:
         return await crud.users.create(obj_in=user_in)  
@@ -37,7 +42,7 @@ async def create_user(*, user_in: schemas.UserCreate) -> Any:
 
 
 # update user
-@user.put("/user/{id}", tags=["User"])
+@router.put("/{id}")
 async def update_user(*, id: str, user_in: schemas.UserUpdate) -> Any:
     user = await crud.users.update(id=id, obj_in=user_in)
     if not user:
@@ -48,7 +53,7 @@ async def update_user(*, id: str, user_in: schemas.UserUpdate) -> Any:
     
 
 # delete user
-@user.delete("/user/{id}", tags=["User"])
+@router.delete("/{id}")
 async def delete_user(*, id: str) -> Any:
     user = await crud.users.remove(id=id)
     if not user:
