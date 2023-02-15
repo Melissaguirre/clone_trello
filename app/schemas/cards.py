@@ -1,11 +1,12 @@
 from pydantic import BaseModel 
 from typing import Optional
-
+from datetime import date
+from uuid import UUID
 
 class CardBase(BaseModel):
-    id : str 
+    id : Optional[UUID]
     card_description : Optional[str] 
-    due_date : Optional[int] 
+    due_date : date
     list_id : Optional[str]
 
 
@@ -15,7 +16,7 @@ class CardCreate(CardBase):
 
 class CardUpdate(BaseModel):
     card_description : Optional[str] 
-    due_date : int
+    due_date : date
 
 
 class ReadCards(CardBase):
@@ -23,7 +24,7 @@ class ReadCards(CardBase):
 
 
 class CardInDBBase(CardBase):
-    id : str 
+    id : Optional[UUID]
 
     class Config:
         orm_mode = True

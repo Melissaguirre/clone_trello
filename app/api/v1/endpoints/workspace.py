@@ -6,6 +6,8 @@ import tortoise
 
 
 router = APIRouter()
+
+
 #read all workspeaces
 @router.get("", response_model=List[schemas.ReadWorkspace])
 async def get_workspaces(skip: int = 0, limit: int = 100) -> Any:
@@ -13,13 +15,18 @@ async def get_workspaces(skip: int = 0, limit: int = 100) -> Any:
 
 #read workspaces by workspaceID
 @router.get("/{id}", response_model=schemas.Workspace)
-async def get_workspaces(id: str)-> Any:
+async def get_workspaces(id: str) -> Any:
     try: 
         return await crud.workpaces.get_by_id(id=id)
     except tortoise.exceptions.DoesNotExist:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, 
             detail="Workspace is not found")
+
+#filter by name workspace
+@router.get("/{workspace_name}", response_model=schemas.BaseUser)
+async def get_user_by_name(workspace_name : str) -> Any:
+    return await crud.users.filter_name_user(workspace_name=workspace_name)
 
 
 #create workspace

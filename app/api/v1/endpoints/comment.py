@@ -6,10 +6,19 @@ import tortoise
 
 router = APIRouter()
 
+
 #read comment 
 @router.get("", response_model=List[schemas.Comment])
 async def get_comments(skip: int = 0, limit: int = 100) -> Any:
     return await crud.comments.get_all(skip=skip, limit=limit)
+
+
+#count comments
+@router.get("/count")
+async def count_comments(self, *, skip: int = 0, limit: int = 100):
+    comment = await crud.comments.get_all(skip=skip, limit=limit)
+    return {"number of comments": comment}
+
 
 #read by id
 @router.get("/{id}", response_model=schemas.Comment)
@@ -21,6 +30,7 @@ async def get_comment(id: str) -> Any:
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Comment is not found")
 
+
 #create comment
 @router.post("", response_model=schemas.Comment)
 async def create_comment(comment_in: schemas.CommentCreate) -> Any:
@@ -31,6 +41,7 @@ async def create_comment(comment_in: schemas.CommentCreate) -> Any:
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Comment is not found")
 
+
 #update comment
 @router.put("/{id}", response_model=schemas.Comment)
 async def update_comment(id: str, comment_in: schemas.CommentUpdate) -> Any:
@@ -40,6 +51,7 @@ async def update_comment(id: str, comment_in: schemas.CommentUpdate) -> Any:
             status_code=404,
             detail="Comment is not found")
     return comment
+
 
 #delete comment
 @router.delete("/{id}")

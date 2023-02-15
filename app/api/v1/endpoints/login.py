@@ -22,6 +22,6 @@ async def login_access_token(form_data: OAuth2PasswordRequestForm = Depends()) -
         "token_type": "bearer",
     }
 
-@router.post("/test-token", response_model=schemas.User)
-async def token_current_user(current_user: models.Users = Depends(deps.get_current_user)) -> Any:
-    return current_user
+# @router.post("/test-token", response_model=schemas.User)
+# async def token_current_user(current_user: schemas.User = Depends(deps.get_current_user)) -> Any:
+#     return current_user

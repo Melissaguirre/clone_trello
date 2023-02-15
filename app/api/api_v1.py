@@ -8,7 +8,8 @@ from app.api.v1.endpoints import (
     workspace,
     workspace_user,
     card_user,
-    login
+    login, 
+    login_firebase
 )
 
 router = APIRouter()
@@ -22,3 +23,4 @@ router.include_router(comment.router, prefix="/comment", tags=["Comments"])
 router.include_router(workspace_user.router, prefix="/workspace_user", tags=["Workspace-User"])
 router.include_router(card_user.router, prefix="/card_ser", tags=["Card-User"])
 router.include_router(login.router, prefix="/login", tags=["Login"])
+router.include_router(login_firebase.router, prefix="/login", tags=["test Firebase"])

@@ -5,10 +5,26 @@ from app import schemas, models, crud
 import tortoise
 
 router = APIRouter()
+
+
 #read list 
 @router.get("", response_model=List[schemas.ReadList])
 async def get_lists(skip: int = 0, limit: int = 100) -> Any:
     return await crud.lists.get_all(skip=skip, limit=limit)
+
+
+#count lists 
+@router.get("/count")
+async def count_users(skip: int = 0, limit: int = 100) -> Any:
+    lists = await crud.lists.count_all(skip=skip, limit=limit)
+    return {"number of lists": lists}
+
+
+#filter by name list
+@router.get("/{list_name}", response_model=schemas.BaseUser)
+async def get_user_by_name(list_name : str) -> Any:
+    return await crud.users.filter_name_user(list_name=list_name)
+
 
 #read list by listID
 @router.get("/{list_id}", response_model=schemas.Lists)

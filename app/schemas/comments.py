@@ -1,10 +1,11 @@
 from pydantic import BaseModel
 from datetime import datetime 
-from typing import Optional 
+from typing import Optional
+from uuid import UUID 
 
 
 class CommentBase(BaseModel):
-    id: str
+    id : Optional[UUID]
     activity : Optional[bool]  
     comment_content : Optional[str] 
     date_created : datetime 
@@ -24,11 +25,11 @@ class CommentUpdate(BaseModel):
 
 
 class ReadComment(CommentBase): 
-    id : str
+    id : Optional[UUID]
 
 
 class CommentInDBBase(CommentBase):
-    id : str 
+    id : Optional[UUID] 
     date_modified : datetime 
 
     class Config:

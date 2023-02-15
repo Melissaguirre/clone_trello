@@ -2,7 +2,7 @@ from tortoise.models import Model
 from tortoise import fields 
 
 class Comments(Model):
-    id = fields.CharField(pk=True, index = True, max_length=255)
+    id = fields.UUIDField(pk=True)
     activity = fields.BooleanField()
     comment_content = fields.TextField(max_length=225)
     date_created = fields.DatetimeField(auto_now_add=True)

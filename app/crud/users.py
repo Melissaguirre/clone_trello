@@ -1,15 +1,19 @@
-from typing import Optional
+from typing import Optional, List
 
 from app.models.users import Users
 from app.schemas.users import UserCreate, UserUpdate, UserInDB
 from app.crud.base import CRUDBase
 
+from uuid import UUID
+
 from app.core.security import get_password_hash, verify_password
 
 
 class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
-        
-        
+    
+    async def get_by_id(self, *, id: UUID) -> Optional[Users]:
+        return await Users.get(id=id)
+  
     async def filter_name_user(self, *, first_name: str) -> Users:
         return await Users.filter(first_name=first_name).first()
         

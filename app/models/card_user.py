@@ -3,7 +3,7 @@ from tortoise import fields
 
 
 class CardUsers(Model):
-    id : fields.CharField(pk=True, index=True, max_length=50)
+    id : fields.UUIDField(pk=True)
     card = fields.ForeignKeyField("models.Cards", related_name="cards", null=True)
     user = fields.ForeignKeyField("models.Users", related_name="users", null=True)
     order = fields.IntField()

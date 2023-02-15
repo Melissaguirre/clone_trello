@@ -1,9 +1,9 @@
 from pydantic import BaseModel 
 from typing import Optional
-
+from uuid import UUID
 
 class ListBase(BaseModel):
-    list_id : str 
+    list_id : Optional[UUID]
     list_name : Optional[str] 
     order : Optional[int] 
     workspace_id : Optional[str] 
@@ -23,7 +23,7 @@ class ReadList(ListBase):
 
 
 class ListInDBBase(ListBase):
-    list_id : str 
+    list_id : Optional[UUID]
 
     class Config:
         orm_mode = True

@@ -1,9 +1,9 @@
 from pydantic import BaseModel 
 from typing import Optional
-
+from uuid import UUID
 
 class WorkspaceBase(BaseModel):
-    id : str 
+    id : Optional[UUID]
     workspace_name : Optional[str] 
     background_imgURL : Optional[str] 
     starred : Optional[bool] 
@@ -26,7 +26,7 @@ class ReadWorkspace(WorkspaceBase):
 
 
 class WorkspaceInDBBase(WorkspaceBase):
-    id : str 
+    id : Optional[UUID] 
 
     class Config:
         orm_mode = True

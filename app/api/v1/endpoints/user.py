@@ -1,29 +1,45 @@
-from fastapi import APIRouter, FastAPI, HTTPException, Response, status, Request
-from fastapi.responses import JSONResponse
-from typing import List, Any, Union
-from app import schemas, crud, models
-from app.models.users import Users
 import tortoise 
 
+from typing import List, Any, Union
+
+from uuid import UUID
+
+from fastapi import APIRouter, FastAPI, HTTPException, Response, status, Request
+from fastapi.responses import JSONResponse
+
+from app import schemas, crud, models
+from app.models.users import Users
+
+from firebase_admin import auth
+
+
 router = APIRouter()
+
+
+#count users 
+@router.get("/count")
+async def count_users(skip: int = 0, limit: int = 100) -> Any:
+    return await crud.users.count_users(skip=skip, limit=limit)
 
 
 # read all user
 @router.get("", response_model=List[schemas.ReadUser])
 async def read_users(skip: int = 0, limit: int = 100) -> Any:
-    return await crud.users.get_all(skip=skip, limit=limit)
+    user = await crud.users.get_all(skip=skip, limit=limit)
+    return {"registered users": user}
 
 
 #filter by name
 @router.get("/{name}", response_model=schemas.BaseUser)
-async def get_user_by_name(first_name : str):
+async def get_user_by_name(first_name : str) -> Any:
     return await crud.users.filter_name_user(first_name=first_name)
 
-# read by userID
-@router.get("/{id}", response_model=schemas.User)
-async def get_user(*, id: str) -> Any:
+
+# read by userID 
+@router.get("/{id}")
+async def get_by_id(*, id: str) -> Any:
     try:
-        return await crud.users.get_by_id(id=id)
+       return await crud.users.get_by_id(id=id)
     except tortoise.exceptions.DoesNotExist:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -33,8 +49,10 @@ async def get_user(*, id: str) -> Any:
 # create user
 @router.post("", response_model=schemas.BaseUser)
 async def create_user(*, user_in: schemas.UserCreate) -> Any:
+    user = auth.create_user(email=user_in.email, password=user_in.password)
     try:
-        return await crud.users.create(obj_in=user_in)  
+        return await crud.users.create(obj_in=user_in) 
+        
     except tortoise.exceptions.IntegrityError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, 
@@ -42,7 +60,7 @@ async def create_user(*, user_in: schemas.UserCreate) -> Any:
 
 
 # update user
-@router.put("/{id}")
+@router.put("/{id}", response_model=schemas.BaseUser)
 async def update_user(*, id: str, user_in: schemas.UserUpdate) -> Any:
     user = await crud.users.update(id=id, obj_in=user_in)
     if not user:

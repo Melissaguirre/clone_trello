@@ -8,6 +8,11 @@ class CRUDList(CRUDBase[Lists, ListCreate, ListUpdate]):
 
     async def get_by_id(self, *, list_id: str) -> Optional[Lists]:
         return await Lists.get(list_id=list_id)
+    
+        
+    async def filter_name_list(self, *, list_name: str) -> Lists:
+        return await Lists.filter(list_name=list_name).first()
+    
 
     async def create(self, *, obj_in: ListCreate) -> Lists:
         db_obj = await Lists.create(list_id=obj_in.list_id,

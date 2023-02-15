@@ -14,6 +14,13 @@ async def get_cards(skip: int = 0, limit: int = 100) -> Any:
     return await crud.cards.get_all(skip=skip, limit=limit)
 
 
+#count cards
+@router.get("/count")
+async def count_cards(self, *, skip: int = 0, limit: int = 100):
+    cards = await crud.cards.get_all(skip=skip, limit=limit)
+    return {"registered users": cards}
+    
+    
 # read card by cardID
 @router.get("/{id}", response_model=schemas.Card)
 async def get_card(*, id: str) -> Any:
@@ -23,7 +30,6 @@ async def get_card(*, id: str) -> Any:
         raise HTTPException(
             status_code=404,
             detail="Card is not found")
-
 
 
 # create card
@@ -37,7 +43,6 @@ async def create_card(*, card_in: schemas.CardCreate) -> Any:
             detail="The card already exists in the system.")
 
 
-
 # update card
 @router.put("/{id}")
 async def update_card(*, id: str, card_in: schemas.CardUpdate, ) -> Any:
@@ -48,9 +53,8 @@ async def update_card(*, id: str, card_in: schemas.CardUpdate, ) -> Any:
             detail="Card is not found")
     return card
 
+
 # delete card
-
-
 @router.delete("/{id}")
 async def delete_card(id: str) -> Any:
     card = await crud.cards.remove(id=id)

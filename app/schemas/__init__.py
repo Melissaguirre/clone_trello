@@ -1,5 +1,5 @@
 from .cards import Card, CardCreate, CardUpdate, ReadCards
-from .users import User, UserCreate, UserUpdate, ReadUser, BaseUser
+from .users import User, UserCreate, UserUpdate, ReadUser, BaseUser, Login
 from .workspace import Workspace, WorkspaceCreate, WorkspaceUpdate, ReadWorkspace
 from .comments import Comment, CommentCreate, CommentUpdate, ReadComment
 from .lists import Lists, ListCreate, ListUpdate, ReadList
