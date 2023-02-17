@@ -12,21 +12,10 @@ from app import schemas, crud
 
 from helpers import firebase_config
 
+
 cred = credentials.Certificate('helpers/firebase_sdk.json')
 firebase_admin.initialize_app(cred, {'databaseURL':'https://project-trello-263a9-default-rtdb.firebaseio.com/'})
 
-
-root = db.reference()
-# new_user = root.child('users').push({
-#    "id":"1001", 
-#    "first_name":"Mariana", 
-#    "last_name":"Osorio", 
-#    "address":"", "city":"", 
-#    "state":"", "Zip":"", 
-#    "phone":"", 
-#    "email":"mariana@gmail.com", "avatar_imgURL":"", 
-#    "hashed_password":"1212"
-# })
 
 ref = db.reference('/users')
 # ref.set({
@@ -48,6 +37,7 @@ ref = db.reference('/users')
 
 
 router = APIRouter()
+
 
 #get users
 @router.get("/api")

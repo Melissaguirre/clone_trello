@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse
 
 from app import schemas, crud, models
 from app.models.users import Users
+from docker.celery_app import test_celery
 
 from firebase_admin import auth
 
@@ -34,6 +35,10 @@ async def read_users(skip: int = 0, limit: int = 100) -> Any:
 async def get_user_by_name(first_name : str) -> Any:
     return await crud.users.filter_name_user(first_name=first_name)
 
+@router.get("/{name}")
+async def test(name: str):
+    task = test_celery.delay(name)
+    return {"message": "Name received", "id": f"{task}"}
 
 # read by userID 
 @router.get("/{id}")
@@ -50,9 +55,9 @@ async def get_by_id(*, id: str) -> Any:
 @router.post("", response_model=schemas.BaseUser)
 async def create_user(*, user_in: schemas.UserCreate) -> Any:
     user = auth.create_user(email=user_in.email, password=user_in.password)
+    user_in.id = user.uid
     try:
         return await crud.users.create(obj_in=user_in) 
-        
     except tortoise.exceptions.IntegrityError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, 

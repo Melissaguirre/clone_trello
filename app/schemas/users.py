@@ -1,9 +1,9 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 from uuid import UUID
 
 class BaseUser(BaseModel):
-    id : Optional[UUID]
+    id : Optional[str] 
     first_name : Optional[str]
     last_name : Optional[str] 
     address : Optional[str]
@@ -19,8 +19,8 @@ class BaseUser(BaseModel):
 
 
 class UserCreate(BaseUser):
-    id : Optional[UUID]
-    password : str 
+    id : Optional[str]
+    password : str = Field(..., min_length=6)
 
 
 class UserUpdate(BaseModel):
@@ -38,7 +38,7 @@ class ReadUser(BaseUser):
 
 
 class UserInDBBase(BaseUser):
-    id : Optional[UUID]
+    id : Optional[str]
     
     class Config:
         orm_mode = True

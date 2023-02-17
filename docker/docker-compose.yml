@@ -33,6 +33,41 @@ services:
     networks:
       - clone_trello
 
+  worker:
+    container_name: worker_celery
+    build: 
+      dockerfile: Dockerfile
+      context: .
+    command: celery -A celery_app:celery worker
+    volumes:
+      - .:/usr/src/app
+    environment:
+      CELERY_BROKER_URL: amqp://user:mypass@rabbitmq:5671//
+      CELERY_RESULT_BACKEND: rpc://
+    depends_on:
+      - rabbitmq
+    networks:
+      - clone_trello
+
+  rabbitmq:
+    image: rabbitmq:management-alpine
+    ports:
+      - 5671:5672
+      - 15672:15672
+    networks:
+      - clone_trello
+
+  # flower:
+  #   image: mher/flower
+  #   environment:
+  #     - CELERY_BROKER_URL= amqp://user:mypass@rabbitmq:5672/
+  #     - FLOWER_PORT=8888
+  #   ports:
+  #     - 8888:8888
+      
+  #   depends_on:
+  #     - rabbitmq
+  #     - worker
 
 volumes:
   mysql_vol:

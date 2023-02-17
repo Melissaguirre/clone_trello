@@ -3,7 +3,7 @@ from tortoise import fields
 
 
 class Users(Model):
-    id = fields.UUIDField(pk=True)
+    id = fields.CharField(pk=True, max_length=100)
     first_name = fields.CharField(max_length=100)
     last_name = fields.CharField(max_length=100)
     address = fields.CharField(max_length=100)
