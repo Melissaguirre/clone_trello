@@ -20,48 +20,53 @@ services:
   app:
     container_name: application
     build: 
-      dockerfile: Dockerfile
-      context: . 
-    command: uvicorn app.main:app --reload --port 8011
+      dockerfile: docker/Dockerfile
+      context: .. 
+    command: uvicorn app.main:app --reload --port 8000 --host 0.0.0.0
     ports:
-      - 8010:8011
-
+      - '8000:8000'
     environment:
-      DB_URL: mysql://usermysql:password@localhost:33066/proyecto
+      DB_URL: 'mysql://usermysql:password@mysql:3306/proyecto'
     volumes:
-      - .:/usr/src/app
+      - ../:/usr/src/app/
     networks:
       - clone_trello
-
-  worker:
-    container_name: worker_celery
-    build: 
-      dockerfile: Dockerfile
-      context: .
-    command: celery -A celery_app:celery worker
-    volumes:
-      - .:/usr/src/app
-    environment:
-      CELERY_BROKER_URL: amqp://user:mypass@rabbitmq:5671//
-      CELERY_RESULT_BACKEND: rpc://
-    depends_on:
-      - rabbitmq
-    networks:
-      - clone_trello
-
+  
   rabbitmq:
-    image: rabbitmq:management-alpine
+    image: rabbitmq:alpine
     ports:
-      - 5671:5672
-      - 15672:15672
+      - '5672:5672'
+      - '15672:15672'
+
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: mypass
     networks:
       - clone_trello
+
+  # worker:
+  #   container_name: worker_celery
+  #   build: 
+  #     dockerfile: docker/Dockerfile
+  #     context: ..
+  #   command: celery -A app.worker.celery_app:celery worker
+  #   volumes:
+  #     - ..:/usr/src/app
+  #   environment:
+  #     CELERY_BROKER_URL: amqp://user:mypass@rabbitmq:5672//
+  #     CELERY_RESULT_BACKEND: rpc://
+  #   depends_on:
+  #     - rabbitmq
+  #   networks:
+  #     - clone_trello
+
+
 
   # flower:
   #   image: mher/flower
   #   environment:
-  #     - CELERY_BROKER_URL= amqp://user:mypass@rabbitmq:5672/
-  #     - FLOWER_PORT=8888
+  #     CELERY_BROKER_URL: amqp://user:mypass@rabbitmq:5672/
+  #     FLOWER_PORT: 8888
   #   ports:
   #     - 8888:8888
       

@@ -9,7 +9,7 @@ from fastapi.responses import JSONResponse
 
 from app import schemas, crud, models
 from app.models.users import Users
-from docker.celery_app import test_celery
+from app.worker.celery_app import test_celery
 
 from firebase_admin import auth
 
@@ -20,31 +20,32 @@ router = APIRouter()
 #count users 
 @router.get("/count")
 async def count_users(skip: int = 0, limit: int = 100) -> Any:
-    return await crud.users.count_users(skip=skip, limit=limit)
+    return await crud.users.count_all(skip=skip, limit=limit)
 
 
 # read all user
 @router.get("", response_model=List[schemas.ReadUser])
 async def read_users(skip: int = 0, limit: int = 100) -> Any:
     user = await crud.users.get_all(skip=skip, limit=limit)
-    return {"registered users": user}
+    return user
 
 
 #filter by name
-@router.get("/{name}", response_model=schemas.BaseUser)
+@router.get("/filter/{first_name}", response_model=schemas.BaseUser)
 async def get_user_by_name(first_name : str) -> Any:
     return await crud.users.filter_name_user(first_name=first_name)
 
-@router.get("/{name}")
+@router.get("/test/{name}")
 async def test(name: str):
     task = test_celery.delay(name)
     return {"message": "Name received", "id": f"{task}"}
 
+
 # read by userID 
-@router.get("/{id}")
-async def get_by_id(*, id: str) -> Any:
+@router.get("/{id}", response_model=schemas.BaseUser)
+async def get_by_id(id: str) -> Any:
     try:
-       return await crud.users.get_by_id(id=id)
+        return await crud.users.get_by_id(id=id)
     except tortoise.exceptions.DoesNotExist:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -68,6 +69,7 @@ async def create_user(*, user_in: schemas.UserCreate) -> Any:
 @router.put("/{id}", response_model=schemas.BaseUser)
 async def update_user(*, id: str, user_in: schemas.UserUpdate) -> Any:
     user = await crud.users.update(id=id, obj_in=user_in)
+    print(id)
     if not user:
         raise HTTPException(
             status_code=404,

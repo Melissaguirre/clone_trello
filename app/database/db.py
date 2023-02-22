@@ -10,7 +10,7 @@ from app.core.config import settings
 
 async def connectToDatabase():
     await Tortoise.init(
-        db_url = 'mysql://root:@127.0.0.1:33066/proyecto',
+        db_url = settings.DB_URL,
         modules = {'models':['app.models']}
     )
     

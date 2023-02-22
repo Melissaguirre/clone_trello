@@ -35,14 +35,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     async def update(
         self, *, id: Any, obj_in: UpdateSchemaType) -> ModelType:
-        data_update = (obj_in.dict(exclude_unset=True))
-        db_obj = await self.model.filter(id=id).update(**data_update)
-        if db_obj:
-           obj = await self.get_by_id(id=id)
-           return obj
-        return None 
-
-
+        db_obj = await self.model.filter(id=id).update(**obj_in.dict(exclude_unset=True))
+        
+        return await self.get_by_id(id=id)
+           
     async def remove(self, *, id: str) -> ModelType:
         obj = await self.model.filter(id=id).delete()
         return obj
