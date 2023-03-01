@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0 
+    container_name: mysql_proy
+    restart: always 
+    environment: 
+      MYSQL_USER : usermysql
+      MYSQL_ROOT_PASSWORD : password
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: proyecto
+    ports:
+      - '33066:3306'
+    volumes: 
+      - mysql_vol:/var/lib/mysql
+    networks:
+      - clone_trello
+
+  rabbitmq:
+    image: rabbitmq:alpine
+    container_name: rabbitmq
+    restart: always 
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: mypass
+    networks:
+      - clone_trello
+
+  flower:
+    image: mher/flower
+    container_name: flower
+    restart: always 
+    environment:
+      CELERY_BROKER_URL: amqp://user:mypass@rabbitmq:5672//
+      FLOWER_PORT: 8888
+    ports:
+      - 8888:8888
+    depends_on:
+      - rabbitmq
+    networks:
+      - clone_trello
+
+volumes:
+  mysql_vol:
+
+networks:
+  clone_trello:
+    external: true
+
+

@@ -5,11 +5,10 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN pwd
 
 COPY . .
 
-RUN pip install --upgrade pip
+RUN python3 -m pip install --upgrade pip
 
 RUN pip install -r requirements.txt 
 

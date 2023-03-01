@@ -1,7 +1,7 @@
+import uuid
+
 from typing import Any, Union 
-
 from jose import jwt 
-
 from passlib.context import CryptContext
 
 from app.core.config import settings
@@ -27,3 +27,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
+
+def generate_token():
+    return str(uuid.uuid4()).replace('-', '')
+

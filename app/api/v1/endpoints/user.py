@@ -5,11 +5,11 @@ from typing import List, Any, Union
 from uuid import UUID
 
 from fastapi import APIRouter, FastAPI, HTTPException, Response, status, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, ORJSONResponse, RedirectResponse
 
 from app import schemas, crud, models
 from app.models.users import Users
-from app.worker.celery_app import test_celery
+from app.worker.celery_app import send_email, test_celery
 
 from firebase_admin import auth
 
@@ -29,16 +29,18 @@ async def read_users(skip: int = 0, limit: int = 100) -> Any:
     user = await crud.users.get_all(skip=skip, limit=limit)
     return user
 
-
 #filter by name
 @router.get("/filter/{first_name}", response_model=schemas.BaseUser)
 async def get_user_by_name(first_name : str) -> Any:
     return await crud.users.filter_name_user(first_name=first_name)
 
-@router.get("/test/{name}")
-async def test(name: str):
-    task = test_celery.delay(name)
-    return {"message": "Name received", "id": f"{task}"}
+
+@router.get("/{token}")
+async def activate_user(token: str):
+    user = await crud.users.verify_token(token)
+    if user:
+        return "User is activate"
+    return HTTPException(status_code=400)
 
 
 # read by userID 
@@ -53,12 +55,18 @@ async def get_by_id(id: str) -> Any:
 
 
 # create user
-@router.post("", response_model=schemas.BaseUser)
+@router.post("")
 async def create_user(*, user_in: schemas.UserCreate) -> Any:
-    user = auth.create_user(email=user_in.email, password=user_in.password)
-    user_in.id = user.uid
+    #authentication user
+    # user = auth.create_user(email=user_in.email, password=user_in.password)
+    #id save as uid  
+    # user_in.id = user.uid
+    #send email
+    users = await crud.users.create(obj_in=user_in) 
+    send_email.delay(user_in.email)
     try:
-        return await crud.users.create(obj_in=user_in) 
+        return {"message": "check your email"}
+        
     except tortoise.exceptions.IntegrityError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, 
@@ -86,3 +94,8 @@ async def delete_user(*, id: str) -> Any:
             status_code=404,
             detail="User is not found")
     return {"message": "Successfully deleted"}
+
+@router.post("/token/{token}")
+async def validate_token(token: str):
+    return token
+

@@ -43,3 +43,11 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         obj = await self.model.filter(id=id).delete()
         return obj
 
+    async def verify_token(self, *, token: str) -> str:
+        result = await self.model.filter(token=token).first()
+        if result:
+            user = self.model.is_active = True
+            return {"message": "User is active"}
+        else:
+            return None
+

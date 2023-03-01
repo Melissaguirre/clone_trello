@@ -14,4 +14,6 @@ class Users(Model):
     email = fields.CharField(max_length=100)
     avatar_imgURL = fields.CharField(max_length=225)
     hashed_password = fields.CharField(max_length=100)
+    is_active = fields.BooleanField(default = False)
+    token = fields.CharField(max_length=50)
     

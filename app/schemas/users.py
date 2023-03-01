@@ -12,7 +12,9 @@ class BaseUser(BaseModel):
     Zip : Optional[int]
     phone  : Optional[str] 
     email : Optional[str] 
-    avatar_imgURL : Optional[str] 
+    avatar_imgURL : Optional[str]
+    is_active : bool = False
+    token: Optional[str] 
 
     class Config:
         orm_mode = True
@@ -22,6 +24,8 @@ class UserCreate(BaseUser):
     id : Optional[str]
     password : str = Field(..., min_length=6)
 
+class ActivateUser(BaseModel):
+    token: Optional[str]
 
 class UserUpdate(BaseModel):
     address : Optional[str] 
