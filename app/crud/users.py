@@ -15,11 +15,12 @@ class CRUDUser(CRUDBase[Users, UserCreate, UserUpdate]):
     async def filter_name_user(self, *, first_name: str) -> Users:
         return await Users.filter(first_name=first_name).first()
         
-    async def create(self, *, obj_in: UserCreate) -> str:
+    async def create(self, *, obj_in: UserCreate) -> dict:
         
         db_obj = await Users.create(id=obj_in.id,
         first_name = obj_in.first_name, last_name=obj_in.last_name,
-        address=obj_in.address, city=obj_in.city,state=obj_in.state, Zip=obj_in.Zip,phone=obj_in.phone, email=obj_in.email, avatar_imgURL=obj_in.avatar_imgURL,hashed_password=get_password_hash(obj_in.password), is_active=obj_in.is_active, token=generate_token())
+        address=obj_in.address, city=obj_in.city,state=obj_in.state, Zip=obj_in.Zip,phone=obj_in.phone, email=obj_in.email, avatar_imgURL=obj_in.avatar_imgURL,hashed_password=get_password_hash(obj_in.password), is_active=obj_in.is_active, token=obj_in.token)
+        
         return {"message": "check your email"}
      
     async def verify_token(*, token: str) -> str:

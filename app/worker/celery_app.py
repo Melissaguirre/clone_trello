@@ -6,6 +6,7 @@ from celery import Celery
 from app.core.config import settings
 from app.core.security import generate_token
 
+
 broker_url = "amqp://user:mypass@rabbitmq:5672//"
 result_backend = "rpc://"
 
@@ -18,9 +19,9 @@ def test_celery(name):
     return name.upper()
 
 @celery.task
-def send_email(to: str):
+def send_email(to: str, token: str):
     SUBJECT : str = "Verificación de registro."
-    BODY: str = generate_token()
+    BODY = f"http://127.0.0.1:8000/api/v1/user/token/{token}"
     message = f"Subject:{SUBJECT}\n\n{BODY}"
     encoded_message = message.encode('utf-8')
     

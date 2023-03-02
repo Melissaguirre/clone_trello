@@ -13,7 +13,7 @@ services:
     environment:
       DB_URL: 'mysql://usermysql:password@mysql:3306/proyecto'
     volumes:
-      - ../:/usr/src/app/
+      - ../:/usr/src/app
     networks:
       - clone_trello
   

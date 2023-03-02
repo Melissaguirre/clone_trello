@@ -4,14 +4,15 @@ from typing import List, Any, Union
 
 from uuid import UUID
 
+from firebase_admin import auth
+
 from fastapi import APIRouter, FastAPI, HTTPException, Response, status, Request
 from fastapi.responses import JSONResponse, ORJSONResponse, RedirectResponse
 
 from app import schemas, crud, models
 from app.models.users import Users
 from app.worker.celery_app import send_email, test_celery
-
-from firebase_admin import auth
+from app.core.security import generate_token
 
 
 router = APIRouter()
@@ -35,7 +36,7 @@ async def get_user_by_name(first_name : str) -> Any:
     return await crud.users.filter_name_user(first_name=first_name)
 
 
-@router.get("/{token}")
+@router.get("/token/{token}")
 async def activate_user(token: str):
     user = await crud.users.verify_token(token)
     if user:
@@ -62,8 +63,10 @@ async def create_user(*, user_in: schemas.UserCreate) -> Any:
     #id save as uid  
     # user_in.id = user.uid
     #send email
-    users = await crud.users.create(obj_in=user_in) 
-    send_email.delay(user_in.email)
+    users = await crud.users.create(obj_in=user_in)
+    token = generate_token()
+    user_in.token = token
+    send_email.delay(user_in.email, token)
     try:
         return {"message": "check your email"}
         
@@ -95,7 +98,4 @@ async def delete_user(*, id: str) -> Any:
             detail="User is not found")
     return {"message": "Successfully deleted"}
 
-@router.post("/token/{token}")
-async def validate_token(token: str):
-    return token
 
